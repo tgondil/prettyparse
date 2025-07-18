@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-const FooterNav = ({ currentIndex, totalRecords, onPrevious, onNext, currentStatus, onInterview, onReject, onClearStatus }) => {
+const FooterNav = memo(({ currentIndex, totalRecords, onPrevious, onNext, currentStatus, onInterview, onReject, onClearStatus }) => {
   const isFirstRecord = currentIndex === 0;
   const isLastRecord = currentIndex === totalRecords - 1;
 
@@ -129,6 +129,7 @@ const FooterNav = ({ currentIndex, totalRecords, onPrevious, onNext, currentStat
       </div>
     </footer>
   );
-};
+});
 
-export default FooterNav; 
+export default FooterNav;
+FooterNav.displayName = 'FooterNav'; 

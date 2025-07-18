@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-const Header = ({ currentIndex, totalRecords, darkMode, onToggleDarkMode, currentStatus, recordStatuses, onClearAllStatuses, hasEmDash }) => {
+const Header = memo(({ currentIndex, totalRecords, darkMode, onToggleDarkMode, currentStatus, recordStatuses, onClearAllStatuses, hasEmDash }) => {
   const progress = totalRecords > 0 ? ((currentIndex + 1) / totalRecords) * 100 : 0;
   
   // Calculate review statistics
@@ -114,6 +114,7 @@ const Header = ({ currentIndex, totalRecords, darkMode, onToggleDarkMode, curren
       </div>
     </header>
   );
-};
+});
 
-export default Header; 
+export default Header;
+Header.displayName = 'Header'; 

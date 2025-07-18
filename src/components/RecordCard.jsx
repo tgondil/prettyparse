@@ -1,12 +1,15 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
 
-const RecordCard = ({ record, currentStatus, hasEmDash }) => {
+const RecordCard = memo(({ record, currentStatus, hasEmDash }) => {
   const cardRef = useRef(null);
 
   useEffect(() => {
-    // Smoothly scroll content to top on record change
+    // Smoothly scroll content to top on record change with animation
     if (cardRef.current) {
-      cardRef.current.scrollTop = 0;
+      cardRef.current.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
   }, [record]);
 
@@ -32,16 +35,16 @@ const RecordCard = ({ record, currentStatus, hasEmDash }) => {
         ? 'border-2 border-orange-300 dark:border-orange-600'
         : 'border border-gray-200 dark:border-gray-700'
     }`}>
-      {hasEmDash && (
-        <div className="absolute -top-3 -right-3 z-10">
-          <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-orange-400 to-red-500 text-white shadow-lg animate-pulse">
-            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
-            AI
-          </div>
-        </div>
-      )}
+             {hasEmDash && (
+         <div className="absolute -top-3 -right-3 z-10 animate-bounce-in">
+           <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-orange-400 to-red-500 text-white shadow-lg animate-gentle-pulse">
+             <svg className="w-3 h-3 mr-1 animate-wiggle" fill="currentColor" viewBox="0 0 20 20">
+               <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+             </svg>
+             AI
+           </div>
+         </div>
+       )}
       <div 
         ref={cardRef}
         className="max-h-96 overflow-y-auto p-8 space-y-1"
@@ -58,13 +61,14 @@ const RecordCard = ({ record, currentStatus, hasEmDash }) => {
             </div>
             <p className="text-gray-500 dark:text-gray-400 text-lg">No data available for this record</p>
           </div>
-        ) : (
-          <div className="space-y-1">
-            {entries.map(([key, value], index) => (
-              <div 
-                key={index}
-                className="group hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-gray-700/50 dark:hover:to-gray-600/50 rounded-xl transition-all duration-200 p-4 border border-transparent hover:border-blue-200 dark:hover:border-gray-600"
-              >
+                 ) : (
+           <div className="space-y-1">
+             {entries.map(([key, value], index) => (
+               <div 
+                 key={index}
+                 className="group hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-gray-700/50 dark:hover:to-gray-600/50 rounded-xl transition-all duration-300 p-4 border border-transparent hover:border-blue-200 dark:hover:border-gray-600 hover:shadow-sm transform hover:translate-x-1"
+                 style={{ animationDelay: `${index * 50}ms` }}
+               >
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                   <div className="lg:col-span-1">
                     <div className="inline-flex items-center">
@@ -91,6 +95,7 @@ const RecordCard = ({ record, currentStatus, hasEmDash }) => {
       </div>
     </section>
   );
-};
+});
 
-export default RecordCard; 
+export default RecordCard;
+RecordCard.displayName = 'RecordCard'; 
