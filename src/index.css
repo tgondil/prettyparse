@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+  }
+
+  /* Screen reader only content */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+@layer components {
+  /* Custom scrollbar styles */
+  .overflow-y-auto::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-track {
+    @apply bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-full;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-blue-400 to-purple-500 dark:from-blue-500 dark:to-purple-600 rounded-full shadow-lg;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    @apply from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500;
+  }
+
+  /* Focus styles for better accessibility */
+  button:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid theme('colors.blue.500');
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px theme('colors.blue.500' / 0.1);
+  }
+
+  /* Enhanced shadow utilities */
+  .shadow-3xl {
+    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Custom gradient backgrounds */
+  .bg-gray-850 {
+    background-color: #1f2937;
+  }
+} 
