@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const RecordCard = ({ record, currentStatus }) => {
+const RecordCard = ({ record, currentStatus, hasEmDash }) => {
   const cardRef = useRef(null);
 
   useEffect(() => {
@@ -23,13 +23,25 @@ const RecordCard = ({ record, currentStatus }) => {
   );
 
   return (
-    <section className={`bg-gradient-to-br from-white via-gray-50 to-white dark:from-gray-800 dark:via-gray-850 dark:to-gray-800 rounded-3xl shadow-2xl max-w-3xl mx-auto transition-all duration-300 hover:shadow-3xl hover:scale-[1.01] ${
+    <section className={`relative bg-gradient-to-br from-white via-gray-50 to-white dark:from-gray-800 dark:via-gray-850 dark:to-gray-800 rounded-3xl shadow-2xl max-w-3xl mx-auto transition-all duration-300 hover:shadow-3xl hover:scale-[1.01] ${
       currentStatus === 'interview' 
         ? 'border-2 border-green-300 dark:border-green-600' 
         : currentStatus === 'reject' 
         ? 'border-2 border-red-300 dark:border-red-600'
+        : hasEmDash
+        ? 'border-2 border-orange-300 dark:border-orange-600'
         : 'border border-gray-200 dark:border-gray-700'
     }`}>
+      {hasEmDash && (
+        <div className="absolute -top-3 -right-3 z-10">
+          <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-orange-400 to-red-500 text-white shadow-lg animate-pulse">
+            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            AI
+          </div>
+        </div>
+      )}
       <div 
         ref={cardRef}
         className="max-h-96 overflow-y-auto p-8 space-y-1"
@@ -62,11 +74,15 @@ const RecordCard = ({ record, currentStatus }) => {
                       </span>
                     </div>
                   </div>
-                  <div className="lg:col-span-2">
-                    <div className="text-gray-700 dark:text-gray-300 break-words whitespace-pre-wrap bg-white/60 dark:bg-gray-800/60 rounded-lg p-3 border border-gray-100 dark:border-gray-700 group-hover:border-blue-200 dark:group-hover:border-gray-600 transition-all duration-200">
-                      {String(value)}
-                    </div>
-                  </div>
+                                   <div className="lg:col-span-2">
+                     <div className={`text-gray-700 dark:text-gray-300 break-words whitespace-pre-wrap bg-white/60 dark:bg-gray-800/60 rounded-lg p-3 border border-gray-100 dark:border-gray-700 group-hover:border-blue-200 dark:group-hover:border-gray-600 transition-all duration-200 ${
+                       typeof value === 'string' && value.includes('—') 
+                         ? 'bg-orange-50/80 dark:bg-orange-900/20 border-orange-200 dark:border-orange-700' 
+                         : ''
+                     }`}>
+                       {String(value)}
+                     </div>
+                   </div>
                 </div>
               </div>
             ))}

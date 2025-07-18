@@ -143,6 +143,11 @@ function App() {
   const totalRecords = data.length;
   const currentStatus = recordStatuses[currentIndex];
 
+  // Detect em dashes in current record (potential AI indicator)
+  const hasEmDash = currentRecord && Object.values(currentRecord).some(value => 
+    typeof value === 'string' && value.includes('—')
+  );
+
   return (
     <div className={`min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-slate-900 transition-all duration-500`}>
       {/* Animated background elements */}
@@ -160,10 +165,11 @@ function App() {
           currentStatus={currentStatus}
           recordStatuses={recordStatuses}
           onClearAllStatuses={clearAllStatuses}
+          hasEmDash={hasEmDash}
         />
         
         <main className="my-12">
-          <RecordCard record={currentRecord} currentStatus={currentStatus} />
+          <RecordCard record={currentRecord} currentStatus={currentStatus} hasEmDash={hasEmDash} />
         </main>
 
         <FooterNav 
