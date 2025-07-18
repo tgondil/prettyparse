@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Header = ({ currentIndex, totalRecords, darkMode, onToggleDarkMode, currentStatus, recordStatuses }) => {
+const Header = ({ currentIndex, totalRecords, darkMode, onToggleDarkMode, currentStatus, recordStatuses, onClearAllStatuses }) => {
   const progress = totalRecords > 0 ? ((currentIndex + 1) / totalRecords) * 100 : 0;
   
   // Calculate review statistics
@@ -11,20 +11,40 @@ const Header = ({ currentIndex, totalRecords, darkMode, onToggleDarkMode, curren
   return (
     <header className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 p-8 transition-all duration-300 hover:shadow-2xl">
       <div className="flex items-center justify-between mb-6">
-        <div>
+        <div className="flex-1">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
             Application Review
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Navigate through applications with ease
-          </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Navigate through applications with ease • Decisions saved automatically
+              {reviewedCount > 0 && (
+                <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                  {reviewedCount} reviewed
+                </span>
+              )}
+            </p>
         </div>
         
-        <button
-          onClick={onToggleDarkMode}
-          className="group relative p-3 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 hover:from-blue-100 hover:to-purple-100 dark:hover:from-gray-600 dark:hover:to-gray-700 border border-blue-200 dark:border-gray-600 transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:outline-none transform hover:scale-105"
-          aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
+        <div className="flex items-center space-x-3">
+          {reviewedCount > 0 && (
+            <button
+              onClick={onClearAllStatuses}
+              className="group relative p-3 rounded-xl bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/30 dark:to-orange-900/30 hover:from-red-100 hover:to-orange-100 dark:hover:from-red-800/40 dark:hover:to-orange-800/40 border border-red-200 dark:border-red-700 transition-all duration-300 focus:ring-2 focus:ring-red-500 focus:outline-none transform hover:scale-105"
+              aria-label="Clear all review decisions"
+              title="Clear all review decisions"
+            >
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-red-400/20 to-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <svg className="w-5 h-5 text-red-600 dark:text-red-400 relative z-10 transition-transform duration-300 group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          )}
+
+          <button
+            onClick={onToggleDarkMode}
+            className="group relative p-3 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 hover:from-blue-100 hover:to-purple-100 dark:hover:from-gray-600 dark:hover:to-gray-700 border border-blue-200 dark:border-gray-600 transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:outline-none transform hover:scale-105"
+            aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
           <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-400/20 to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           {darkMode ? (
             <svg className="w-6 h-6 text-yellow-500 relative z-10 transition-transform duration-300 group-hover:rotate-12" fill="currentColor" viewBox="0 0 20 20">
@@ -35,7 +55,8 @@ const Header = ({ currentIndex, totalRecords, darkMode, onToggleDarkMode, curren
               <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
             </svg>
           )}
-        </button>
+          </button>
+        </div>
       </div>
 
       <div className="space-y-4">

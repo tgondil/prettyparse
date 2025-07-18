@@ -9,7 +9,44 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [recordStatuses, setRecordStatuses] = useState({});
+  const [statusesLoaded, setStatusesLoaded] = useState(false);
   const { data, loading, error } = useCSV('/responses.csv');
+
+  // Load decisions from localStorage on mount
+  useEffect(() => {
+    const loadStoredStatuses = () => {
+      try {
+        const savedStatuses = localStorage.getItem('applicationReviewStatuses');
+        if (savedStatuses) {
+          const parsedStatuses = JSON.parse(savedStatuses);
+          console.log('Loaded review decisions from localStorage:', parsedStatuses);
+          setRecordStatuses(parsedStatuses);
+        } else {
+          console.log('No stored review decisions found');
+        }
+      } catch (error) {
+        console.warn('Failed to load review statuses from localStorage:', error);
+        // Clear corrupted data
+        localStorage.removeItem('applicationReviewStatuses');
+      } finally {
+        setStatusesLoaded(true);
+      }
+    };
+
+    loadStoredStatuses();
+  }, []);
+
+  // Save decisions to localStorage whenever recordStatuses changes (but not on initial empty load)
+  useEffect(() => {
+    if (statusesLoaded) {
+      try {
+        localStorage.setItem('applicationReviewStatuses', JSON.stringify(recordStatuses));
+        console.log('Saved review decisions to localStorage:', recordStatuses);
+      } catch (error) {
+        console.warn('Failed to save review statuses to localStorage:', error);
+      }
+    }
+  }, [recordStatuses, statusesLoaded]);
 
   useKeyboardNav(currentIndex, setCurrentIndex, data?.length || 0);
 
@@ -51,6 +88,20 @@ function App() {
     });
   };
 
+  const clearAllStatuses = () => {
+    const reviewedCount = Object.keys(recordStatuses).length;
+    if (reviewedCount > 0) {
+      const confirmed = window.confirm(
+        `Are you sure you want to clear all ${reviewedCount} review decisions? This action cannot be undone.`
+      );
+      if (confirmed) {
+        setRecordStatuses({});
+        localStorage.removeItem('applicationReviewStatuses');
+        console.log('Cleared all review decisions');
+      }
+    }
+  };
+
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -59,17 +110,22 @@ function App() {
     }
   }, [darkMode]);
 
-  if (loading) {
+  if (loading || !statusesLoaded) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-gray-600 dark:text-gray-300">Loading CSV data...</div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-gray-600 dark:text-gray-300 text-lg mb-2">
+            {loading ? 'Loading CSV data...' : 'Restoring your review decisions...'}
+          </div>
+          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin mx-auto"></div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-slate-900 flex items-center justify-center">
         <div className="text-red-600 dark:text-red-400">Error loading CSV: {error}</div>
       </div>
     );
@@ -77,7 +133,7 @@ function App() {
 
   if (!data || data.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-slate-900 flex items-center justify-center">
         <div className="text-gray-600 dark:text-gray-300">No data found</div>
       </div>
     );
@@ -103,6 +159,7 @@ function App() {
           onToggleDarkMode={toggleDarkMode}
           currentStatus={currentStatus}
           recordStatuses={recordStatuses}
+          onClearAllStatuses={clearAllStatuses}
         />
         
         <main className="my-12">
